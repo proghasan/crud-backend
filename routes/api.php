@@ -28,4 +28,5 @@ Route::group(['middleware' => ['AuthJwt']], function(){
     Route::delete("delete-product/{id}", [ProductController::class, 'delete']);
     Route::get("products", [ProductController::class, 'products']);
     Route::get("product/{id}", [ProductController::class, 'product']);
+    Route::get("check-auth", function(){ return true;});
 });

@@ -29,7 +29,7 @@ class UserRepository implements UserRepositoryInterface{
             return $res;
         }
 
-        $res->token = $token;
+        $res->token = 'Bearer '.$token;
         $res->user =  Auth()->user();
         $res->status =200;
         return $res;
