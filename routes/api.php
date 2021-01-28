@@ -24,7 +24,7 @@ Route::group(['middleware' => ['AuthJwt']], function(){
 
     // product 
     Route::post("save-product", [ProductController::class, 'save']);
-    Route::put("update-product", [ProductController::class, 'update']);
+    Route::post("update-product", [ProductController::class, 'update']);
     Route::delete("delete-product/{id}", [ProductController::class, 'delete']);
     Route::get("products", [ProductController::class, 'products']);
     Route::get("product/{id}", [ProductController::class, 'product']);

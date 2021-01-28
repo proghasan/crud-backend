@@ -20,7 +20,7 @@ class ProductStoreRequest extends FormRequest
             'title' => 'required|max:255',
             'price' => 'required|numeric',
             'description' => 'required',
-            'image' => 'mimes:jpeg,jpg,png,gif|max:20000'
+            'image' => 'nullable|mimes:jpeg,jpg,png,gif|max:20000'
         ];
     }
 

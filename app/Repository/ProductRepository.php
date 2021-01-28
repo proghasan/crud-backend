@@ -13,9 +13,6 @@ class  ProductRepository implements ProductRepositoryInterface
         try{
             $fileName = null;
             if(isset($request['image'])){
-                if(file_exists('products/'.$request['image'])){
-                    unlink('products/'.$request['image']);
-                }
                 $fileName =  time().'.'.$request['image']->getClientOriginalName();
                 request()->image->move(public_path('products'), $fileName);
             }
@@ -43,15 +40,14 @@ class  ProductRepository implements ProductRepositoryInterface
             $product = Product::find($request['id']);
             $fileName = $product->image;
             if(isset($request['image'])){
-                if(file_exists('products/'.$product->image)){
-                    unlink('products/'.$product->image);
+                if(file_exists('products/'.$fileName)){
+                    @unlink('products/'.$fileName);
                 }
 
                 $fileName =  time().'.'.$request['image']->getClientOriginalName();
                 request()->image->move(public_path('products'), $fileName);
             }
 
-            
             $product->title = $request['title'];
             $product->description = $request['description'];
             $product->price = $request['price'];
@@ -72,12 +68,15 @@ class  ProductRepository implements ProductRepositoryInterface
         $res = new stdClass;
         try{
             $product = Product::find($id);
+            if(file_exists("products/".$product->image)){
+                @unlink('products/'.$product->image);
+            }
             $product->delete();
 
             $res->message = "Product deleted successfully";
             $res->status = 200;
         }catch(\Exception $e){
-            $res->message = "Product deleted fail";
+            $res->message = "Product deleted fail".$e->getMessage();
             $res->status = 422;
         }
         return $res;
@@ -87,7 +86,11 @@ class  ProductRepository implements ProductRepositoryInterface
     {
         $res = new stdClass;
         try{
-            $products= Product::get();
+            $products= Product::get()
+                ->map(function($product){
+                    $product->image = url('/').'/products/'.$product->image;
+                    return $product;
+                });
 
             $res->products = $products;
             $res->status = 200;
@@ -103,7 +106,6 @@ class  ProductRepository implements ProductRepositoryInterface
         $res = new stdClass;
         try{
             $product = Product::find($id);
-
             $res->product = $product;
             $res->status = 200;
         }catch(\Exception $e){
